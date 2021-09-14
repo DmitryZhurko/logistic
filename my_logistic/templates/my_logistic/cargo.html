@@ -1,0 +1,88 @@
+{% extends 'my_logistic/base.html' %}
+
+
+{% block content %}
+   <style type="text/css">
+   body {
+    background: url(static/my_logistic/images/cargos.jpg) no-repeat;
+    -moz-background-size: 100%;
+    -webkit-background-size: 100%;
+    -o-background-size: 100%;
+    background-size: 100%;
+   }
+  </style>
+
+<br><br><br>
+<h2  class="p-3 mb-2 bg-warning text-dark">{{title}}</h2><br>
+
+
+
+
+{% if var == 'add' or var == 'edit' %}
+<form method="POST">
+{% csrf_token %}
+
+<table class="table table-dark">
+  <thead>
+    <tr>
+      <th scope="col">Название груза</th>
+      <th scope="col">Дистанция</th>
+      <th scope="col">Маршрут</th>
+      <th scope="col">Масса</th>
+      <th scope="col">Добавление</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td scope="col">{{ form.name }}</td>
+      <td scope="col">{{ form.distance }}</td>
+      <td scope="col">{{ form.route }}</td>
+      <td scope="col">{{ form.weight }}</td>
+      <td scope="col"><button class="btn btn-success" type="submit">Добавить</button></td>
+    </tr>
+  </tbody>
+</table>
+
+</form>
+{% endif %}
+
+
+
+<table class="table table-dark">
+  <thead>
+    <tr>
+      <th scope="col">Название груза</th>
+      <th scope="col">Дистанция</th>
+      <th scope="col">Маршрут</th>
+      <th scope="col">Масса</th>
+      <th scope="col">Статус груза</th>
+      <th scope="col">Удаление</th>
+      <th scope="col">Редактирование</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for i in cargo_list %}
+    <tr>
+      <td>{{ i.name }}</td>
+      <td>{{ i.distance }}</td>
+      <td>{{ i.route }}</td>
+      <td>{{ i.weight }}</td>
+
+      {% if i.executed == True %}
+      <td>Доставлен</td>
+      {% elif i.free == True %}
+      <td>Свободен</td>
+      {% else %}
+     <td>Доставляется либо в очереди</td>
+      {% endif %}
+
+      <td><a class="text-white bg-dark" href="{% url 'del_cargo' del_cargo_pk=i.pk %}">Удалить</a></td>
+      <td><a class="text-white bg-dark" href="{% url 'edit_cargo' edit_cargo_pk=i.pk %}?param=edit">Редактировать</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+<button type="button" class="btn btn-warning"><a class="text-dark" href="{% url 'add_cargo' %}?param=add">Добавить груз</a></button>
+
+{% endblock %}

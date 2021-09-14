@@ -1,0 +1,387 @@
+
+{% extends 'my_logistic/base.html' %}
+
+
+{% block content %}
+
+
+<br><br><br>
+   <style type="text/css">
+   body {
+    background: url(static/my_logistic/images/report_of_all_month) no-repeat;
+    -moz-background-size: 100%;
+    -webkit-background-size: 100%;
+    -o-background-size: 100%;
+    background-size: 100%;
+   }
+  </style>
+{% if var != '2' and var != '4' %}
+<h2 class="p-3 mb-2 bg-warning text-dark">Отчет по месяцам за {{year}} год</h2>
+<br>
+
+
+<table class="table table-dark">
+  <thead>
+    <tr>
+        <th scope="col">Месяц</th>
+      <th scope="col">Количество заявок</th>
+      <th scope="col">Количество перевезенных грузов</th>
+      <th scope="col">Общая прибыль</th>
+      <th scope="col">Затраты на топливо</th>
+      <th scope="col">Чистая прибыль</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+         <td>Январь</td>
+       <td>{{ report.1.0 }}</td>
+       <td>{{ report.1.1 }}</td>
+       <td>{{ report.1.2 }}</td>
+       <td>{{ report.1.3 }}</td>
+       <td>{{ report.1.4 }}</td>
+    </tr>
+    <tr>
+         <td>Февраль</td>
+       <td>{{ report.2.0 }}</td>
+       <td>{{ report.2.1 }}</td>
+       <td>{{ report.2.2 }}</td>
+       <td>{{ report.2.3 }}</td>
+       <td>{{ report.2.4 }}</td>
+    </tr>
+
+    <tr>
+         <td>Март</td>
+       <td>{{ report.3.0 }}</td>
+       <td>{{ report.3.1 }}</td>
+       <td>{{ report.3.2 }}</td>
+       <td>{{ report.3.3 }}</td>
+       <td>{{ report.3.4 }}</td>
+    </tr>
+    <tr>
+          <td>Апрель</td>
+       <td>{{ report.4.0 }}</td>
+       <td>{{ report.4.1 }}</td>
+       <td>{{ report.4.2 }}</td>
+       <td>{{ report.4.3 }}</td>
+       <td>{{ report.4.4 }}</td>
+    </tr>
+    <tr>
+        <td>Май</td>
+       <td>{{ report.5.0 }}</td>
+       <td>{{ report.5.1 }}</td>
+       <td>{{ report.5.2 }}</td>
+       <td>{{ report.5.3 }}</td>
+       <td>{{ report.5.4 }}</td>
+    </tr>
+    <tr>
+        <td>Июнь</td>
+       <td>{{ report.6.0 }}</td>
+       <td>{{ report.6.1 }}</td>
+       <td>{{ report.6.2 }}</td>
+       <td>{{ report.6.3 }}</td>
+       <td>{{ report.6.4 }}</td>
+    </tr>
+    <tr>
+        <td>Июль</td>
+       <td>{{ report.7.0 }}</td>
+       <td>{{ report.7.1 }}</td>
+       <td>{{ report.7.2 }}</td>
+       <td>{{ report.7.3 }}</td>
+       <td>{{ report.7.4 }}</td>
+    </tr>
+    <tr>
+         <td>Август</td>
+       <td>{{ report.8.0 }}</td>
+       <td>{{ report.8.1 }}</td>
+       <td>{{ report.8.2 }}</td>
+       <td>{{ report.8.3 }}</td>
+       <td>{{ report.8.4 }}</td>
+    </tr>
+
+    <tr>
+         <td>Сентябрь</td>
+       <td>{{ report.9.0 }}</td>
+       <td>{{ report.9.1 }}</td>
+       <td>{{ report.9.2 }}</td>
+       <td>{{ report.9.3 }}</td>
+       <td>{{ report.9.4 }}</td>
+    </tr>
+    <tr>
+        <td>Октябрь</td>
+       <td>{{ report.10.0 }}</td>
+       <td>{{ report.10.1 }}</td>
+       <td>{{ report.10.2 }}</td>
+       <td>{{ report.10.3 }}</td>
+       <td>{{ report.10.4 }}</td>
+    </tr>
+    <tr>
+           <td>Ноябрь</td>
+       <td>{{ report.11.0 }}</td>
+       <td>{{ report.11.1 }}</td>
+       <td>{{ report.11.2 }}</td>
+       <td>{{ report.11.3 }}</td>
+       <td>{{ report.11.4 }}</td>
+    </tr>
+    <tr>
+         <td>Декабрь</td>
+       <td>{{ report.12.0 }}</td>
+       <td>{{ report.12.1 }}</td>
+       <td>{{ report.12.2 }}</td>
+       <td>{{ report.12.3 }}</td>
+       <td>{{ report.12.4 }}</td>
+    </tr>
+  </tbody>
+</table>
+
+<button type="button" class="btn btn-warning"><a class="text-dark" href="{% url 'report_for_all_months' %}?param=2">График по прибыли за {{year}}</a></button>
+<button type="button" class="btn btn-warning"><a class="text-dark" href="{% url 'report_for_all_months' %}?param=4">График по чистой прибыли за {{year}}</a></button>
+
+{% elif var == '2' %}
+<div id="container" ></div>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/data.js"></script>
+<script src="https://code.highcharts.com/modules/drilldown.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+<script type="text/javascript">
+
+Highcharts.chart('container', {
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: 'Прибыль по месяцам за {{year}} год'
+    },
+
+    accessibility: {
+        announceNewData: {
+            enabled: true
+        }
+    },
+    xAxis: {
+        type: 'category'
+    },
+    yAxis: {
+        title: {
+            text: 'Прибыль в рублях'
+        }
+
+    },
+    legend: {
+        enabled: false
+    },
+    plotOptions: {
+        series: {
+            borderWidth: 0,
+            dataLabels: {
+                enabled: true,
+                format: '{point.y:1f} рублей'
+            }
+        }
+    },
+
+    tooltip: {
+        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+    },
+
+    series: [
+        {
+            name: "Browsers",
+            colorByPoint: true,
+            data: [
+                {
+                    name: "Январь",
+                    y: {{report.1.2}},
+                    drilldown: "Chrome"
+                },
+                {
+                    name: "Февраль",
+                    y: {{report.2.2}},
+                    drilldown: "Firefox"
+                },
+                {
+                    name: "Март",
+                    y: {{report.3.2}},
+                    drilldown: "Internet Explorer"
+                },
+                {
+                    name: "Апрель",
+                    y: {{report.4.2}},
+                    drilldown: "Safari"
+                },
+                {
+                    name: "Май",
+                    y: {{report.5.2}},
+                    drilldown: "Edge"
+                },
+                {
+                    name: "Июнь",
+                    y: {{report.6.2}},
+                    drilldown: "Opera"
+                },
+                {
+                    name: "Июль",
+                    y: {{report.7.2}},
+                    drilldown: null
+                },
+                {
+                    name: "Август",
+                    y: {{report.8.2}},
+                    drilldown: null
+                },
+                {
+                    name: "Сентябрь",
+                    y: {{report.9.2}},
+                    drilldown: null
+                },
+                {
+                    name: "Октябрь",
+                    y: {{report.10.2}},
+                    drilldown: null
+                },
+                {
+                    name: "Ноябрь",
+                    y: {{report.11.2}},
+                    drilldown: null
+                },
+                {
+                    name: "Декабрь",
+                    y: {{report.12.2}},
+                    drilldown: null
+                },
+
+            ]
+        }
+    ],
+
+});
+</script>
+{% elif var == '4' %}
+<div id="container_1" ></div>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/data.js"></script>
+<script src="https://code.highcharts.com/modules/drilldown.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+<script type="text/javascript">
+
+Highcharts.chart('container_1', {
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: 'Прибыль по месяцам за {{year}} год'
+    },
+
+    accessibility: {
+        announceNewData: {
+            enabled: true
+        }
+    },
+    xAxis: {
+        type: 'category'
+    },
+    yAxis: {
+        title: {
+            text: 'Прибыль в рублях'
+        }
+
+    },
+    legend: {
+        enabled: false
+    },
+    plotOptions: {
+        series: {
+            borderWidth: 0,
+            dataLabels: {
+                enabled: true,
+                format: '{point.y:1f} рублей'
+            }
+        }
+    },
+
+    tooltip: {
+        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+    },
+
+    series: [
+        {
+            name: "Browsers",
+            colorByPoint: true,
+            data: [
+                {
+                    name: "Январь",
+                    y: {{report.1.4}},
+                    drilldown: "Chrome"
+                },
+                {
+                    name: "Февраль",
+                    y: {{report.2.4}},
+                    drilldown: "Firefox"
+                },
+                {
+                    name: "Март",
+                    y: {{report.3.4}},
+                    drilldown: "Internet Explorer"
+                },
+                {
+                    name: "Апрель",
+                    y: {{report.4.4}},
+                    drilldown: "Safari"
+                },
+                {
+                    name: "Май",
+                    y: {{report.5.4}},
+                    drilldown: "Edge"
+                },
+                {
+                    name: "Июнь",
+                    y: {{report.6.4}},
+                    drilldown: "Opera"
+                },
+                {
+                    name: "Июль",
+                    y: {{report.7.4}},
+                    drilldown: null
+                },
+                {
+                    name: "Август",
+                    y: {{report.8.4}},
+                    drilldown: null
+                },
+                {
+                    name: "Сентябрь",
+                    y: {{report.9.4}},
+                    drilldown: null
+                },
+                {
+                    name: "Октябрь",
+                    y: {{report.10.4}},
+                    drilldown: null
+                },
+                {
+                    name: "Ноябрь",
+                    y: {{report.11.4}},
+                    drilldown: null
+                },
+                {
+                    name: "Декабрь",
+                    y: {{report.12.4}},
+                    drilldown: null
+                },
+
+            ]
+        }
+    ],
+
+});
+</script>
+
+{% endif %}
+{% endblock %}

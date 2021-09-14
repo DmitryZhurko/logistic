@@ -1,0 +1,78 @@
+{% extends 'my_logistic/base.html' %}
+
+
+{% block content %}
+<br><br><br>
+   <style type="text/css">
+   body {
+    background: url(static/my_logistic/images/truck.jpg) no-repeat;
+    -moz-background-size: 100%;
+    -webkit-background-size: 100%;
+    -o-background-size: 100%;
+    background-size: 100%;
+   }
+  </style>
+<h2 class="p-3 mb-2 bg-warning text-dark">Отчет по автомобилям</h2>
+<br>
+
+{% if var == 'add' or var == 'edit' %}
+<form method="POST">
+  {% csrf_token %}
+  <br><br><br><br><br><br><br>
+<h2 class="text-center">{{ form.cargos.errors }}</h2>
+  <table class="table table-dark">
+      <thead>
+    <tr>
+      <th scope="col">Автомобиль</th>
+      <th scope="col">Груз</th>
+      <th scope="col">Добавление</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <th scope="col">{{ form.auto }}</th>
+      <th scope="col">{{ form.cargos }}</th>
+      <th scope="col"><button class="btn btn-success" type="submit">установить</button></th>
+    </tr>
+  </tbody>
+  </table>
+</form>
+{% endif %}
+
+<table class="table table-dark">
+  <thead>
+    <tr>
+
+      <th scope="col">Автомобиль</th>
+      <th scope="col">Груз</th>
+      <th scope="col">Регистрационный знак</th>
+      <th scope="col">Цвет</th>
+      <th scope="col">Грузоподъемность</th>
+      <th scope="col">Статус</th>
+      <th scope="col">Расход топлива</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for i in cars  %}
+    <tr>
+
+      <td>{{ i.brand }}-{{ i.model }}</td>
+      <td>
+        <a href="{% url 'cargo_in_auto' pk_auto=i.pk %}">Просмотреть груз</a>
+      </td>
+      <td>{{ i.registration_mark }}</td>
+      <td>{{ i.color }}</td>
+      <td>{{ i.carrying }}</td>
+      {% if i.free == True %}
+      <td>свободна</td>
+      {% else %}
+      <td>занята</td>
+      {% endif %}
+      <td>{{ i.fuel_consumption }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

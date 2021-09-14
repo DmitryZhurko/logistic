@@ -1,0 +1,87 @@
+{% extends 'my_logistic/base.html' %}
+
+
+{% block content %}
+   <style type="text/css">
+   body {
+    background: url(static/my_logistic/images/car.jpg) no-repeat;
+    -moz-background-size: 100%;
+    -webkit-background-size: 100%;
+    -o-background-size: 100%;
+    background-size: 100%;
+   }
+  </style>
+<br><br><br>
+<h2 class="p-3 mb-2 bg-warning text-dark">Автомобили</h2><br>
+
+
+
+{% if var == 'edit' or var == 'add' %}
+<form method="POST">
+  {% csrf_token %}
+  <table class="table table-dark">
+  <thead>
+    <tr>
+      <td scope="col">Марка</td>
+      <td scope="col">Модель</td>
+      <td scope="col">Регистрационный знак</td>
+      <td scope="col">Цвет</td>
+      <td scope="col">Грузоподъемность</td>
+      <td scope="col">Расход топлива</td>
+      <td scope="col">Действие</td>
+    </tr>
+  </thead>
+
+     <tbody>
+    <tr>
+      <th scope="col">{{ form.brand }}</th>
+      <th scope="col">{{ form.model }}</th>
+      <th scope="col">{{ form.registration_mark }}</th>
+      <th scope="col">{{ form.color }}</th>
+      <th scope="col">{{ form.carrying }}</th>
+      <th scope="col">{{ form.fuel_consumption }}</th>
+      <th scope="col"><button class="btn btn-success" type="submit">Добавить</button></th>
+    </tr>
+  </tbody>
+  </table>
+</form>
+{% endif %}
+
+
+
+
+<table class="table table-dark">
+  <thead>
+    <tr>
+      <th scope="col">Марка</th>
+      <th scope="col">Модель</th>
+      <th scope="col">Регистрационный знак</th>
+      <th scope="col">Цвет</th>
+      <th scope="col">Грузоподъемность</th>
+      <th scope="col">Свободна</th>
+      <th scope="col">Изменить</th>
+      <th scope="col">Удаление</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for i in cars_list %}
+    <tr>
+      <td>{{ i.brand }}</td>
+      <td>{{ i.model }}</td>
+      <td>{{ i.registration_mark }}</td>
+      <td>{{ i.color }}</td>
+      <td>{{ i.carrying }}</td>
+      {% if i.free == True %}
+      <td>Свободна</td>
+      {% else %}
+      <td>Занята</td>
+      {% endif %}
+      <td><a class="text-white bg-dark" href="{% url 'del_cars' del_cars_pk=i.pk %}">Удалить</a></td>
+      <td><a class="text-white bg-dark" href="{% url 'edit_cars' cars_edit_pk=i.pk %}?param=edit">Редактировать</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+<button type="button" class="btn btn-warning"><a class="text-dark" href="{% url 'add_cars' %}?param=add">Добавить машину</a></button>
+
+{% endblock %}

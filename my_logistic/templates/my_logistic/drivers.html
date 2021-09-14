@@ -1,0 +1,74 @@
+{% extends 'my_logistic/base.html' %}
+
+
+{% block content %}
+   <style type="text/css">
+   body {
+    background: url(static/my_logistic/images/driver.jpg) no-repeat;
+    -moz-background-size: 100%;
+    -webkit-background-size: 100%;
+    -o-background-size: 100%;
+    background-size: 100%;
+   }
+  </style>
+<br><br><br>
+<h2 class="p-3 mb-2 bg-warning text-dark">Водители</h2><br>
+
+
+<p>{{ error }}</p>
+
+ {% if var == 'edit' or var == 'add' %}
+<form method="POST">
+  {% csrf_token %}
+  <table class="table table-dark">
+      <thead>
+    <tr>
+      <th scope="col">Имя</th>
+      <th scope="col">Фамилия</th>
+      <th scope="col">Возраст</th>
+      <th scope="col">Автомобиль</th>
+      <th scope="col">Добавление</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="col">{{ form.name }}</th>
+      <th scope="col">{{ form.surname }}</th>
+      <th scope="col">{{ form.age }}</th>
+      <th scope="col">{{ form.car }}</th>
+      <th scope="col"><button class="btn btn-success" type="submit">Добавить</button></th>
+
+    </tr>
+  </tbody>
+  </table>
+</form>
+{% endif %}
+
+
+<table class="table table-dark">
+  <thead>
+    <tr>
+      <th scope="col">Имя</th>
+      <th scope="col">Фамилия</th>
+      <th scope="col">Возраст</th>
+      <th scope="col">Автомобиль</th>
+      <th scope="col">Обновить</th>
+       <th scope="col">Удаление записи</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for i in driver_list  %}
+    <tr>
+      <td>{{ i.name }}</td>
+      <td>{{ i.surname }}</td>
+      <td>{{ i.age }}</td>
+      <td>{{ i.car.brand }}-{{ i.car.model }}</td>
+      <td><a class="text-white bg-dark" href="{% url 'edit' edit_pk=i.pk %}?param=edit">Редактировать</a></td>
+      <td><a class="text-white bg-dark" href="{% url 'del_drivers' del_drivers_pk=i.pk %}">Удалить</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<button type="button" class="btn btn-warning"><a class="text-dark" href="{% url 'add_drivers' %}?param=add">Добавить водителя</a></button>
+{% endblock %}

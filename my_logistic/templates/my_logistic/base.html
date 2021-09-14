@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="chortcut icon" href="{% static 'my_logistic/images/fon.jpg' %}" type="image/x-icon">
+
+</head>
+
+<body>
+{% if user.is_authenticated %}
+    <button style="margin-left: 90%" type="button" class="btn btn-dark"><a class="text-white bg-dark" href="{% url 'logout' %}">Выйти </a>--> {{user.username}}</button>
+{% endif %}
+<br>
+<br>
+<div align="center" >
+ <button type="button" class="btn btn-dark"><a class="text-white bg-dark" href="{% url 'drivers' %}">Водители</a></button>
+ <button type="button" class="btn btn-dark"><a class="text-white bg-dark" href="{% url 'cars' %}">Автомобили</a></button>
+ <button type="button" class="btn btn-dark"><a class="text-white bg-dark" href="{% url 'cargo' %}">Грузы</a></button>
+ <button type="button" class="btn btn-dark"><a class="text-white bg-dark" href="{% url 'applications' %}">Заявки</a></button>
+  <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Отчеты</button>
+
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item text-dark" href="{% url 'free_car_report' %}">Машины свободные</a></li>
+    <li><a class="dropdown-item text-dark" href="{% url 'busy_cars' %}">Машины занятые</a></li>
+    <li><a class="dropdown-item text-dark" href="{% url 'queue_of_applications_free' %}">Заявки в очереди</a></li>
+    <li><a class="dropdown-item text-dark" href="{% url 'queue_of_applications_busy' %}">Заявки на исполнении</a></li>
+    <li><a class="dropdown-item text-dark" href="{% url 'applications_delivered' %}">Заявки исполненные</a></li>
+      <li><a class="dropdown-item text-dark" href="{% url 'cargo_free' %}">Грузы недоставленные</a></li>
+      <li><a class="dropdown-item text-dark" href="{% url 'cargo_busy' %}">Грузы исполняемые</a></li>
+      <li><a class="dropdown-item text-dark" href="{% url 'cargo_delivered' %}">Грузы доставленные</a></li>
+      <li><a class="dropdown-item text-dark" href="{% url 'reports_year' %}">Отчеты</a></li>
+    <li><hr class="dropdown-divider"></li>
+  </ul>
+</div>
+
+{% block content %}
+{% endblock %}
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</html>

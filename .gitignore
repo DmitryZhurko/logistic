@@ -1,0 +1,15 @@
+*.pyc
+*~
+db.sqlite3
+.DS_Store
+.idea
+.env/
+.venv/
+env/
+venv/
+__pycache__/
+venv
+myvenv
+
+local_settings.py
+prod_settings.py

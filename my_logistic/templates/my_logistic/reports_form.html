@@ -1,0 +1,26 @@
+{% extends 'my_logistic/base.html' %}
+
+
+{% block content %}
+<br><br><br>
+   <style type="text/css">
+   body {
+    background: url(static/my_logistic/images/reports_form.jpg) no-repeat;
+    -moz-background-size: 100%;
+    -webkit-background-size: 100%;
+    -o-background-size: 100%;
+    background-size: 100%;
+   }
+  </style>
+<h2 class="p-3 mb-2 bg-warning text-dark">{{ask}}</h2>
+<br>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form.data }}
+
+<button type="submit" class="btn btn-warning" style="margin-top:5px;margin-left:10px; width: 130px;">выбрать</button>
+</form>
+
+
+{% endblock %}

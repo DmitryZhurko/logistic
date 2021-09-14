@@ -1,0 +1,89 @@
+{% extends 'my_logistic/base.html' %}
+
+
+{% block content %}
+<br><br><br>
+   <style type="text/css">
+   body {
+    background: url(static/my_logistic/images/fon.jpg) no-repeat;
+    -moz-background-size: 100%;
+    -webkit-background-size: 100%;
+    -o-background-size: 100%;
+    background-size: 100%;
+   }
+  </style>
+<h2 class="p-3 mb-2 bg-warning text-dark">Заявки</h2>
+<br>
+
+{% if var == 'add' or var == 'edit' %}
+<form method="POST">
+  {% csrf_token %}
+  <br><br><br><br><br><br><br>
+<h2 class="text-center">{{ form.cargos.errors }}</h2>
+  <table class="table table-dark">
+      <thead>
+    <tr>
+      <th scope="col">Автомобиль</th>
+      <th scope="col">Груз</th>
+      <th scope="col">Добавление</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <th scope="col">{{ form.auto }}</th>
+      <th scope="col">{{ form.cargos }}</th>
+      <th scope="col"><button class="btn btn-success" type="submit">Добавить</button></th>
+    </tr>
+  </tbody>
+  </table>
+</form>
+{% endif %}
+
+<table class="table table-dark">
+  <thead>
+    <tr>
+      <th scope="col">Номер заявки</th>
+      <th scope="col">Автомобиль</th>
+      <th scope="col">Груз</th>
+      <th scope="col">Цена</th>
+      <th scope="col">Статус заявки</th>
+      <th scope="col">Дата принятия заявки</th>
+      <th scope="col">Редактировать</th>
+       <th scope="col">Удаление записи</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for i in applications_list  %}
+    <tr>
+       <td>{{ i.pk }}</td>
+      <td>{{ i.auto.brand }}-{{ i.auto.model }}</td>
+      <td>
+        {% for cargo in i.cargos.all %}
+        {{ cargo.name }}
+        {% endfor %}
+      </td>
+      <td>{{ i.cost }}</td>
+      {% if i.executed == True %}
+       <td>Доставлен</td>
+      {% else %}
+      <td>{{ i.execution }}</td>
+      {% endif %}
+      <td>{{ i.date_added }}</td>
+      <td><a class="text-white bg-dark" href="{% url 'edit_applications' edit_applications_pk=i.pk %}?param=edit">Редактировать</a></td>
+      <td><a class="text-white bg-dark" href="{% url 'del_applications' del_applications_pk=i.pk %}">Удалить</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+<button type="button" class="btn btn-warning"><a class="text-dark" href="{% url 'add_applications' %}?param=add">Добавить заявку</a></button>
+<button type="button" class="btn btn-warning"><a class="text-dark" href="{% url 'add_applicationsForm' %}?param=add_form">Пометить исполненный груз</a></button>
+{% if var == 'add_form' %}
+<form method="POST">
+  {% csrf_token %}
+{{ form.number }}
+
+<button type="submit" class="btn btn-warning" style="margin-top:5px;margin-left:10px; width: 130px;">установить</button>
+{% endif %}
+</form>
+{% endblock %}
