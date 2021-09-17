@@ -1,25 +1,23 @@
-from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import ValidationError
 from django.db.models import Count
 from django.db.models.functions import TruncMonth
 from django.shortcuts import render, redirect
 from django.template.context_processors import csrf
-
 from .models import Driver, Cars, Applications, Cargo, variant_for_status, variant_for_status_car
 from .forms import DriversForm, CarsForm, ApplicationsForm, CargoForm, FulfilledApplicationsForm, YearForm, MonthForm
 from django.contrib import auth
 
-
+#Вывод всех водителей
 def drivers(request):
     driver_list = Driver.objects.all()
-    return render(request, 'my_logistic/drivers.html', {'driver_list': driver_list})
+    #получение группы в которой состоит пользователь
+    access = str(request.user.groups.first())
+    return render(request, 'my_logistic/drivers.html', {'driver_list': driver_list, 'access': access})
 
 
 def del_drivers(request, del_drivers_pk):
     driver = Driver.objects.get(pk=del_drivers_pk)
-
     driver.delete()
-
     return redirect('drivers')
 
 
@@ -52,10 +50,11 @@ def add_drivers(request):
         form = DriversForm()
     return render(request, 'my_logistic/drivers.html', {'form': form, 'var': var, 'driver_list': driver_list, 'error': error })
 
-
+#вывод всех машин
 def cars(request):
     cars_list = Cars.objects.all()
-    return render(request, 'my_logistic/cars.html', {'cars_list': cars_list})
+    access = str(request.user.groups.first())
+    return render(request, 'my_logistic/cars.html', {'cars_list': cars_list, 'access': access})
 
 
 def edit_cars(request, cars_edit_pk):
@@ -78,6 +77,7 @@ def del_cars(request, del_cars_pk):
 
 
 def add_cars(request):
+    #получение параметра из шаблона
     var = request.GET.get('param')
     cars_list = Cars.objects.all()
     if request.method == 'POST':
@@ -90,6 +90,7 @@ def add_cars(request):
     return render(request, 'my_logistic/cars.html', {'form': form, 'var': var, 'cars_list': cars_list})
 
 
+#вывод всех заявок кроме executed=True
 def applications(request):
     applications_list = Applications.objects.exclude(executed=True)
     return render(request, 'my_logistic/applications.html', {'applications_list': applications_list})
@@ -101,8 +102,10 @@ def add_applications(request):
     if request.method == 'POST':
         form = ApplicationsForm(request.POST)
         if form.is_valid():
+            #получение очищенных данных
             auto = form.cleaned_data['auto']
             cargos = form.cleaned_data['cargos']
+            #создание новое объекта заявок и добавление тода автомобиля
             application = Applications.objects.create(auto=auto)
             if auto.free == False:
                 application.execution = variant_for_status[0]
@@ -112,6 +115,8 @@ def add_applications(request):
                 application.save()
                 auto.free = False
                 auto.save()
+            #берем поочередно все грузы и если груз уже в статусе False, то мы получаем заявку с этим грузом и если
+            # в этой заявке только 1 наш груз то мы удаляем эту заявку
             for cargo in cargos:
                 if cargo.free == False:
                     carg = Applications.objects.get(cargos=cargo.pk)
@@ -182,7 +187,6 @@ def edit_applications(request, edit_applications_pk):
                 elif Applications.objects.filter(auto=car.pk).count() == 0:
                     car.free = True
                     car.save()
-
             for cargo in cargos:
                 if cargo.free == False:
                     carg = Applications.objects.get(cargos=cargo.pk)
@@ -193,14 +197,13 @@ def edit_applications(request, edit_applications_pk):
                 else:
                     cargo.free = False
                     cargo.save()
-
             form.save()
             return redirect('applications')
     else:
         form = ApplicationsForm(instance=edit_applications)
     return render(request, 'my_logistic/applications.html', {'form': form, 'var': var, 'applications_list': applications_list})
 
-
+#добавление формы для отметки заявки как исполненной
 def add_applicationsForm(request):
     var = request.GET.get('param')
     applications_list = Applications.objects.exclude(executed=True)
@@ -230,7 +233,7 @@ def add_applicationsForm(request):
 
 def del_applications(request, del_applications_pk):
     app = Applications.objects.get(pk=del_applications_pk)
-    car_app = Applications.objects.filter(auto__pk=app.auto.pk).order_by('pk')
+    car_app = Applications.objects.filter(auto__pk=app.auto.pk, executed=False).order_by('pk')
     if car_app.count() == 1:
         car = Cars.objects.get(pk=app.auto.pk)
         car.free = True
@@ -292,7 +295,6 @@ def edit_cargo(request, edit_cargo_pk):
         if form.is_valid():
             form.save()
             return redirect('cargo')
-
     else:
         form = CargoForm(instance=edit_cargo)
     return render(request, 'my_logistic/cargo.html', {'form': form, 'var': var, 'cargo_list': cargo_list})
@@ -311,35 +313,40 @@ def del_cargo(request, del_cargo_pk):
     return redirect('cargo')
 
 
+#Свободные автомобили
 def free_car_report(request):
     title = 'Свободные автомобили'
     cars = Cars.objects.filter(free=True)
-    return render(request, 'my_logistic/report_cars.html', {'cars': cars})
+    return render(request, 'my_logistic/report_cars.html', {'cars': cars, 'title': title})
 
 
+#Занятые автомобили
 def busy_cars(request):
     title = 'Занятые автомобили'
     cars = Cars.objects.filter(free=False)
-    return render(request, 'my_logistic/report_cars.html', {'cars': cars})
+    return render(request, 'my_logistic/report_cars.html', {'cars': cars, 'title': title})
+
 
 
 def cargo_in_auto(request, pk_auto):
     cargo_list = []
     apps = Applications.objects.filter(auto__pk=pk_auto)
     for app in apps:
-        for j in app.cargos.all():
+        for j in app.cargos.filter(executed=False):
             cargo_list.append(j)
     return render(request, 'my_logistic/cargo.html', {'cargo_list': cargo_list})
 
 
 def queue_of_applications_free(request):
+    title = 'Заявки в очереди'
     apps = Applications.objects.filter(execution=variant_for_status[0], executed=False).order_by('auto', 'date_added')
-    return render(request, 'my_logistic/report_applications.html', {'apps': apps})
+    return render(request, 'my_logistic/report_applications.html', {'apps': apps, 'title': title})
 
 
 def queue_of_applications_busy(request):
+    title = 'Заявки выполняющиеся'
     apps = Applications.objects.filter(execution=variant_for_status[1], executed=False).order_by('auto', 'date_added')
-    return render(request, 'my_logistic/report_applications.html', {'apps': apps})
+    return render(request, 'my_logistic/report_applications.html', {'apps': apps, 'title': title})
 
 
 def applications_delivered(request):

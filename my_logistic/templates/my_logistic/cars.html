@@ -76,12 +76,20 @@
       {% else %}
       <td>Занята</td>
       {% endif %}
+      {% if access != 'level_1' %}
       <td><a class="text-white bg-dark" href="{% url 'del_cars' del_cars_pk=i.pk %}">Удалить</a></td>
       <td><a class="text-white bg-dark" href="{% url 'edit_cars' cars_edit_pk=i.pk %}?param=edit">Редактировать</a></td>
+      {% else %}
+      <td>Удалить</td>
+      <td>Редактировать</td>
+      {% endif %}
     </tr>
   {% endfor %}
   </tbody>
 </table>
+{% if access != 'level_1' %}
 <button type="button" class="btn btn-warning"><a class="text-dark" href="{% url 'add_cars' %}?param=add">Добавить машину</a></button>
-
+{% else %}
+<button disabled type="button" class="btn btn-warning"><a class="text-dark" href="{% url 'add_cars' %}?param=add">Добавить машину</a></button>
+{% endif %}
 {% endblock %}

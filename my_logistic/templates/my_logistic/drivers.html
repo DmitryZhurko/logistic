@@ -63,12 +63,20 @@
       <td>{{ i.surname }}</td>
       <td>{{ i.age }}</td>
       <td>{{ i.car.brand }}-{{ i.car.model }}</td>
+      {% if access != 'level_1' %}
       <td><a class="text-white bg-dark" href="{% url 'edit' edit_pk=i.pk %}?param=edit">Редактировать</a></td>
       <td><a class="text-white bg-dark" href="{% url 'del_drivers' del_drivers_pk=i.pk %}">Удалить</a></td>
+      {% else %}
+      <td>Редактировать</td>
+      <td>Удалить</td>
+      {% endif %}
     </tr>
   {% endfor %}
   </tbody>
 </table>
-
+{% if access != 'level_1' %}
 <button type="button" class="btn btn-warning"><a class="text-dark" href="{% url 'add_drivers' %}?param=add">Добавить водителя</a></button>
+{% else %}
+<button disabled type="button" class="btn btn-warning"><a class="text-dark" href="{% url 'add_drivers' %}?param=add">Добавить водителя</a></button>
+{% endif %}
 {% endblock %}

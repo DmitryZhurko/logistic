@@ -13,6 +13,7 @@ variant_for_status_car = [
     'в рейсе', 'свободна'
 ]
 
+
 class Cars(models.Model):
     brand = models.CharField(max_length=50, verbose_name='марка')
     model = models.CharField(max_length=50, verbose_name='модель')
