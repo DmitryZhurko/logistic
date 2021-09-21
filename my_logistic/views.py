@@ -7,12 +7,16 @@ from .models import Driver, Cars, Applications, Cargo, variant_for_status, varia
 from .forms import DriversForm, CarsForm, ApplicationsForm, CargoForm, FulfilledApplicationsForm, YearForm, MonthForm
 from django.contrib import auth
 
+
 #Вывод всех водителей
 def drivers(request):
     driver_list = Driver.objects.all()
-    #получение группы в которой состоит пользователь
-    access = str(request.user.groups.first())
-    return render(request, 'my_logistic/drivers.html', {'driver_list': driver_list, 'access': access})
+    return render(request, 'my_logistic/drivers.html', {'driver_list': driver_list})
+
+
+def drivers_detail(request, drivers_pk):
+    driver_list = Driver.objects.get(pk=drivers_pk)
+    return render(request, 'my_logistic/drivers_detail.html', {'driver_list': driver_list})
 
 
 def del_drivers(request, del_drivers_pk):
@@ -23,16 +27,15 @@ def del_drivers(request, del_drivers_pk):
 
 def edit_drivers(request, edit_pk):
     var = request.GET.get('param')
-    driver_list = Driver.objects.all()
-    edit_list = Driver.objects.get(pk=edit_pk)
+    driver_list = Driver.objects.get(pk=edit_pk)
     if request.method == 'POST':
-        form = DriversForm(request.POST, instance=edit_list)
+        form = DriversForm(request.POST, request.FILES, instance=driver_list)
         if form.is_valid():
             form.save()
-            return redirect('drivers')
+            return redirect('drivers_detail', drivers_pk=edit_pk)
     else:
-        form = DriversForm(instance=edit_list)
-    return render(request, 'my_logistic/drivers.html', {'driver_list': driver_list, 'form': form, 'var': var})
+        form = DriversForm(instance=driver_list)
+    return render(request, 'my_logistic/drivers_detail.html', {'driver_list': driver_list, 'form': form, 'var': var})
 
 
 def add_drivers(request):
@@ -40,7 +43,7 @@ def add_drivers(request):
     var = request.GET.get('param')
     driver_list = Driver.objects.all()
     if request.method == 'POST':
-        form = DriversForm(request.POST)
+        form = DriversForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             return redirect('drivers')
@@ -48,13 +51,12 @@ def add_drivers(request):
             error = 'Данная машина закреплена за другим водителем'
     else:
         form = DriversForm()
-    return render(request, 'my_logistic/drivers.html', {'form': form, 'var': var, 'driver_list': driver_list, 'error': error })
+    return render(request, 'my_logistic/drivers_detail.html', {'form': form, 'var': var, 'driver_list': driver_list, 'error': error })
 
 #вывод всех машин
 def cars(request):
     cars_list = Cars.objects.all()
-    access = str(request.user.groups.first())
-    return render(request, 'my_logistic/cars.html', {'cars_list': cars_list, 'access': access})
+    return render(request, 'my_logistic/cars.html', {'cars_list': cars_list})
 
 
 def edit_cars(request, cars_edit_pk):
@@ -72,6 +74,12 @@ def edit_cars(request, cars_edit_pk):
 
 
 def del_cars(request, del_cars_pk):
+    apps = Applications.objects.filter(auto__pk=del_cars_pk)
+    for app in apps:
+        for cargo in app.cargos.all():
+            cargo.free = True
+            cargo.save()
+        app.delete()
     Cars.objects.get(pk=del_cars_pk).delete()
     return redirect('cars')
 
@@ -301,14 +309,18 @@ def edit_cargo(request, edit_cargo_pk):
 
 
 def del_cargo(request, del_cargo_pk):
-    application = Applications.objects.get(cargos__pk=del_cargo_pk)
-    if application.cargos.all().count() == 1:
-        car = application.auto
-        car.free = True
-        car.save()
-        application.delete()
-    elif application.cargos.all().count() > 1:
-        application.cargos.remove(Cargo.objects.get(pk=del_cargo_pk))
+    application = Applications.objects.filter(cargos__pk=del_cargo_pk).first()
+    #если заявка из которой собираемся удалять груз существует
+    if application != None:
+        #если груз был единственным то делаем авто свободным и удаляем заявку
+        if application.cargos.all().count() == 1:
+            car = application.auto
+            car.free = True
+            car.save()
+            application.delete()
+        #если грузов несколько то очищаем тот который будем удалять
+        elif application.cargos.all().count() > 1:
+            application.cargos.remove(Cargo.objects.get(pk=del_cargo_pk))
     Cargo.objects.get(pk=del_cargo_pk).delete()
     return redirect('cargo')
 
@@ -327,14 +339,14 @@ def busy_cars(request):
     return render(request, 'my_logistic/report_cars.html', {'cars': cars, 'title': title})
 
 
-
 def cargo_in_auto(request, pk_auto):
     cargo_list = []
+    title = 'Перевозимые грузы'
     apps = Applications.objects.filter(auto__pk=pk_auto)
     for app in apps:
         for j in app.cargos.filter(executed=False):
             cargo_list.append(j)
-    return render(request, 'my_logistic/cargo.html', {'cargo_list': cargo_list})
+    return render(request, 'my_logistic/cargo.html', {'cargo_list': cargo_list, 'title': title})
 
 
 def queue_of_applications_free(request):

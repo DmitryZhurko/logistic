@@ -1,18 +1,22 @@
 from django import forms
 from django.core.exceptions import ValidationError
+from django.forms import DateInput
+
 from .models import Driver, Cars, Applications, Cargo
 
 
 class DriversForm(forms.ModelForm):
     class Meta:
         model = Driver
-        fields = ['name', 'surname', 'age', 'car']
-
+        fields = ['name', 'surname', 'address', 'photos', 'car', 'patronymic', 'day_of_birth']
+        widgets = {
+            'day_of_birth': forms.DateInput(format=('%d-%m-%Y'), attrs={'type': 'date'}),
+        }
 
 class CarsForm(forms.ModelForm):
     class Meta:
         model = Cars
-        fields = ['brand', 'model', 'registration_mark', 'color', 'carrying', 'fuel_consumption']
+        fields = ['brand', 'model', 'registration_mark', 'color', 'carrying', 'fuel_consumption', 'fuel_type']
 
 
 class ApplicationsForm(forms.ModelForm):
@@ -24,25 +28,18 @@ class ApplicationsForm(forms.ModelForm):
         cargos = self.cleaned_data.get('cargos')
         summa = 0
         for i in cargos:
-            print(i.name)
             summa += i.weight
         if auto == None:
-            print('авто равно нан')
             return cargos
         else:
             if summa > auto.carrying:
-                print('грузоподъямность превышает')
                 raise ValidationError('Грузоподъемность превышена')
             if len(cargos) == 1:
-                print('груз 1')
                 return cargos
             else:
                 if cargos[0].route != cargos[1].route:
-                    print('грузы имеют разный маршрут')
                     raise ValidationError('Грузы должны иметь одинаковый маршрут')
-
                 else:
-                    print('возврат груза')
                     return cargos
 
     class Meta:

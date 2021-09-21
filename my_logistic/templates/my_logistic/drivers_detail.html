@@ -1,0 +1,90 @@
+{% extends 'my_logistic/base.html' %}
+
+
+{% block content %}
+   <style type="text/css">
+   body {
+    background: url(static/my_logistic/images/driver.jpg) no-repeat;
+    -moz-background-size: 100%;
+    -webkit-background-size: 100%;
+    -o-background-size: 100%;
+    background-size: 100%;
+   }
+  </style>
+<br><br><br>
+<h2 class="p-3 mb-2 bg-warning text-dark">Водители: детальный просмотр</h2><br>
+
+<p>{{ error }}</p>
+
+ {% if var == 'edit' or var == 'add' %}
+<form method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+
+  <table class="table table-dark">
+      <thead>
+    <tr>
+      <th scope="col">Имя</th>
+      <th scope="col">Фамилия</th>
+      <th scope="col">Отчество</th>
+      <th scope="col">Дата рождения</th>
+      <th scope="col">Адрес</th>
+
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="col">{{ form.name }}</th>
+      <th scope="col">{{ form.surname }}</th>
+      <th scope="col">{{ form.patronymic }}</th>
+      <th scope="col">{{ form.day_of_birth }}</th>
+      <th scope="col">{{ form.address }}</th>
+
+    </tr>
+    <tr>
+    <th scope="col">Автомобиль</th>
+      <th scope="col">Фото</th>
+      <th scope="col">Добавление</th>
+  </tr>
+  <tr>
+    <th scope="col">{{ form.car }}</th>
+      <th scope="col">{{ form.photos }}</th>
+      <th scope="col"><button class="btn btn-success" type="submit">Добавить</button></th>
+  </tr>
+  </tbody>
+  </table>
+
+</form>
+
+{% else %}
+<table class="table table-dark">
+  <thead>
+    <tr>
+      <th scope="col">Фамилия</th>
+      <th scope="col">Имя</th>
+      <th scope="col">Отчество</th>
+      <th scope="col">Дата рождения</th>
+      <th scope="col">Возраст</th>
+       <th scope="col">Адрес</th>
+      <th scope="col">Автомобиль</th>
+      <th scope="col">Редактировать</th>
+      <th scope="col">Удалить</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <tr>
+      <td>{{ driver_list.surname }}</td>
+      <td>{{ driver_list.name }}</td>
+      <td>{{ driver_list.patronymic }}</td>
+      <td>{{ driver_list.day_of_birth }}</td>
+      <td>{{ driver_list.age }}</td>
+      <td>{{ driver_list.address }}</td>
+      <td>{{ driver_list.car.brand }}-{{ driver_list.car.model }}</td>
+      <td><a href="{% url 'edit_drivers' edit_pk=driver_list.pk %}?param=edit">Редактировать</a></td>
+      <td><a  href="{% url 'del_drivers' del_drivers_pk=driver_list.pk %}">Удалить</a></td>
+    </tr>
+  </tbody>
+</table>
+<p align="center"><img width="250" height="300" src="{{ driver_list.photos.url }}"></p>
+{% endif %}
+{% endblock %}

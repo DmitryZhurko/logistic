@@ -28,6 +28,7 @@
       <td scope="col">Цвет</td>
       <td scope="col">Грузоподъемность</td>
       <td scope="col">Расход топлива</td>
+      <td scope="col">Тип топлива</td>
       <td scope="col">Действие</td>
     </tr>
   </thead>
@@ -40,6 +41,7 @@
       <th scope="col">{{ form.color }}</th>
       <th scope="col">{{ form.carrying }}</th>
       <th scope="col">{{ form.fuel_consumption }}</th>
+      <th scope="col">{{ form.fuel_type }}</th>
       <th scope="col"><button class="btn btn-success" type="submit">Добавить</button></th>
     </tr>
   </tbody>
@@ -58,6 +60,8 @@
       <th scope="col">Регистрационный знак</th>
       <th scope="col">Цвет</th>
       <th scope="col">Грузоподъемность</th>
+      <th scope="col">Тип топлива</th>
+      <th scope="col">Расход топлива</th>
       <th scope="col">Свободна</th>
       <th scope="col">Изменить</th>
       <th scope="col">Удаление</th>
@@ -71,6 +75,8 @@
       <td>{{ i.registration_mark }}</td>
       <td>{{ i.color }}</td>
       <td>{{ i.carrying }}</td>
+      <td>{{ i.fuel_type }}</td>
+      <td>{{ i.fuel_consumption }}</td>
       {% if i.free == True %}
       <td>Свободна</td>
       {% else %}
@@ -87,7 +93,7 @@
   {% endfor %}
   </tbody>
 </table>
-{% if access != 'level_1' %}
+{% if request.user.groups.first.name != 'level_1' %}
 <button type="button" class="btn btn-warning"><a class="text-dark" href="{% url 'add_cars' %}?param=add">Добавить машину</a></button>
 {% else %}
 <button disabled type="button" class="btn btn-warning"><a class="text-dark" href="{% url 'add_cars' %}?param=add">Добавить машину</a></button>

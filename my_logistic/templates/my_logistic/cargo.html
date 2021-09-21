@@ -15,9 +15,6 @@
 <br><br><br>
 <h2  class="p-3 mb-2 bg-warning text-dark">{{title}}</h2><br>
 
-
-
-
 {% if var == 'add' or var == 'edit' %}
 <form method="POST">
 {% csrf_token %}
@@ -46,7 +43,6 @@
 
 </form>
 {% endif %}
-
 
 
 <table class="table table-dark">

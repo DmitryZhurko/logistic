@@ -1,16 +1,20 @@
+from django.conf.urls.static import static
 from django.urls import path
+
+from logistic import settings
 from .views import drivers, edit_drivers, cars, edit_cars, del_drivers, applications, add_applications,\
     add_cargo, add_drivers, del_cars, add_cars, cargo, edit_cargo, del_cargo, edit_applications, del_applications,\
     add_applicationsForm, free_car_report, busy_cars, cargo_in_auto, queue_of_applications_free, queue_of_applications_busy\
     ,reports_year, reports_month, report_for_all_months, cargo_free, cargo_busy, cargo_delivered, applications_delivered,\
-    login, logout
+    login, logout, drivers_detail
 
 urlpatterns = [
     path('add_cargo', add_cargo, name='add_cargo'),
     path('', login, name='login'),
     path('logout', logout, name='logout'),
     path('drivers', drivers, name='drivers'),
-    path('edit_drivers/<int:edit_pk>', edit_drivers, name='edit'),
+    path('drivers_detail<int:drivers_pk>', drivers_detail, name='drivers_detail'),
+    path('edit_drivers/<int:edit_pk>', edit_drivers, name='edit_drivers'),
     path('del_drivers/<int:del_drivers_pk>', del_drivers, name='del_drivers'),
     path('edit_cars/<int:cars_edit_pk>', edit_cars, name='edit_cars'),
     path('cars', cars, name='cars'),
@@ -39,3 +43,6 @@ urlpatterns = [
     path('cargo_delivered', cargo_delivered, name='cargo_delivered'),
 
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
