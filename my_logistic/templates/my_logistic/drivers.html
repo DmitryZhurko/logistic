@@ -23,6 +23,7 @@
       <th scope="col">Отчество</th>
       <th scope="col">Возраст</th>
       <th scope="col">Автомобиль</th>
+      <th scope="col">Подробнее</th>
 
     </tr>
   </thead>
@@ -30,15 +31,17 @@
 
   {% for i in driver_list  %}
     <tr>
-         {% if request.user.groups.first.name != 'level_1' %}
-      <td><a href="{% url 'drivers_detail' drivers_pk=i.pk %}">{{ i.surname }}<a/></td>
-      {% else %}
       <td>{{ i.surname }}</td>
-        {% endif %}
+
       <td>{{ i.name }}</td>
       <td>{{ i.patronymic }}</td>
       <td>{{ i.age }}</td>
       <td>{{ i.car.brand }}-{{ i.car.model }}</td>
+       {% if request.user.groups.first.name != 'level_1' %}
+      <td><button class="btn btn-warning"> <a class="text-dark" href="{% url 'drivers_detail' drivers_pk=i.pk %}">Детали<a/> </button> </td>
+        {% else %}
+      <td><button disabled class="btn btn-warning"> <a class="text-dark" href="{% url 'drivers_detail' drivers_pk=i.pk %}">Детали<a/> </button> </td>
+      {% endif %}
     </tr>
   {% endfor %}
   </tbody>

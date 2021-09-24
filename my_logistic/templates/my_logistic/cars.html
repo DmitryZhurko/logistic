@@ -59,9 +59,9 @@
       <th scope="col">Модель</th>
       <th scope="col">Регистрационный знак</th>
       <th scope="col">Цвет</th>
-      <th scope="col">Грузоподъемность</th>
+      <th scope="col">Грузоподъемность(кг)</th>
       <th scope="col">Тип топлива</th>
-      <th scope="col">Расход топлива</th>
+      <th scope="col">Расход топлива(литры)</th>
       <th scope="col">Свободна</th>
       <th scope="col">Изменить</th>
       <th scope="col">Удаление</th>
@@ -82,7 +82,7 @@
       {% else %}
       <td>Занята</td>
       {% endif %}
-      {% if access != 'level_1' %}
+        {% if request.user.groups.first.name != 'level_1' %}
       <td><a class="text-white bg-dark" href="{% url 'del_cars' del_cars_pk=i.pk %}">Удалить</a></td>
       <td><a class="text-white bg-dark" href="{% url 'edit_cars' cars_edit_pk=i.pk %}?param=edit">Редактировать</a></td>
       {% else %}
