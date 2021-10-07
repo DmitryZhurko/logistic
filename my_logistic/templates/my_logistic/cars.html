@@ -13,7 +13,9 @@
   </style>
 <br><br><br>
 <h2 class="p-3 mb-2 bg-warning text-dark">Автомобили</h2><br>
-
+<button type="button" class="btn btn-secondary"><a class="text-white" href="{% url 'cars' %}">Автомобили</a></button>
+<button type="button" class="btn btn-secondary"><a class="text-white" href="{% url 'free_car_report' %}">Машины свободные</a></button>
+<button type="button" class="btn btn-secondary"><a class="text-white" href="{% url 'busy_cars' %}">Машины занятые</a></button>
 
 
 {% if var == 'edit' or var == 'add' %}
@@ -63,8 +65,11 @@
       <th scope="col">Тип топлива</th>
       <th scope="col">Расход топлива(литры)</th>
       <th scope="col">Свободна</th>
+      {% if request.user.groups.first.name != 'level_1' %}
       <th scope="col">Изменить</th>
       <th scope="col">Удаление</th>
+      {% else %}
+      {% endif %}
     </tr>
   </thead>
   <tbody>
@@ -86,8 +91,6 @@
       <td><a class="text-white bg-dark" href="{% url 'del_cars' del_cars_pk=i.pk %}">Удалить</a></td>
       <td><a class="text-white bg-dark" href="{% url 'edit_cars' cars_edit_pk=i.pk %}?param=edit">Редактировать</a></td>
       {% else %}
-      <td>Удалить</td>
-      <td>Редактировать</td>
       {% endif %}
     </tr>
   {% endfor %}
@@ -96,6 +99,6 @@
 {% if request.user.groups.first.name != 'level_1' %}
 <button type="button" class="btn btn-warning"><a class="text-dark" href="{% url 'add_cars' %}?param=add">Добавить машину</a></button>
 {% else %}
-<button disabled type="button" class="btn btn-warning"><a class="text-dark" href="{% url 'add_cars' %}?param=add">Добавить машину</a></button>
 {% endif %}
+
 {% endblock %}

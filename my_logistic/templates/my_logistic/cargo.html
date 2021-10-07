@@ -14,7 +14,10 @@
 
 <br><br><br>
 <h2  class="p-3 mb-2 bg-warning text-dark">{{title}}</h2><br>
-
+ <button type="button" class="btn btn-secondary"><a class="text-white" href="{% url 'cargo' %}">Грузы</a></button>
+ <button type="button" class="btn btn-secondary"><a class="text-white" href="{% url 'cargo_free' %}">Грузы недоставленные</a></button>
+ <button type="button" class="btn btn-secondary"><a class="text-white" href="{% url 'cargo_busy' %}">Грузы исполняемые</a></button>
+ <button type="button" class="btn btn-secondary"><a class="text-white" href="{% url 'cargo_delivered' %}">Грузы доставленные</a></button>
 {% if var == 'add' or var == 'edit' %}
 <form method="POST">
 {% csrf_token %}

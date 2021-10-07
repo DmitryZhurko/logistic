@@ -19,25 +19,19 @@
  <button type="button" class="btn btn-dark"><a class="text-white bg-dark" href="{% url 'cars' %}">Автомобили</a></button>
  <button type="button" class="btn btn-dark"><a class="text-white bg-dark" href="{% url 'cargo' %}">Грузы</a></button>
  <button type="button" class="btn btn-dark"><a class="text-white bg-dark" href="{% url 'applications' %}">Заявки</a></button>
+{% if request.user.groups.first.name != 'level_1' %}
     <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Отчеты</button>
-
   <ul class="dropdown-menu">
-    <li><a class="dropdown-item text-dark" href="{% url 'free_car_report' %}">Машины свободные</a></li>
-    <li><a class="dropdown-item text-dark" href="{% url 'busy_cars' %}">Машины занятые</a></li>
-    <li><a class="dropdown-item text-dark" href="{% url 'queue_of_applications_free' %}">Заявки в очереди</a></li>
-    <li><a class="dropdown-item text-dark" href="{% url 'queue_of_applications_busy' %}">Заявки на исполнении</a></li>
-    <li><a class="dropdown-item text-dark" href="{% url 'applications_delivered' %}">Заявки исполненные</a></li>
-      <li><a class="dropdown-item text-dark" href="{% url 'cargo_free' %}">Грузы недоставленные</a></li>
-      <li><a class="dropdown-item text-dark" href="{% url 'cargo_busy' %}">Грузы исполняемые</a></li>
-      <li><a class="dropdown-item text-dark" href="{% url 'cargo_delivered' %}">Грузы доставленные</a></li>
-        {% if request.user.groups.first.name != 'level_1' %}
-      <li><a class="dropdown-item text-dark" href="{% url 'reports_year' %}">Отчеты</a></li>
-       {% endif %}
+      <li><a class="dropdown-item text-dark" href="{% url 'reports_year' %}?param=report">Отчеты</a></li>
+      <li><a class="dropdown-item text-dark" href="{% url 'reports_year' %}?param=chart">Графики</a></li>
     <li><hr class="dropdown-divider"></li>
   </ul>
+    {% endif %}
+
 </div>
 
 {% block content %}
+
 {% endblock %}
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>

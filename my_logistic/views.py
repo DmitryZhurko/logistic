@@ -368,6 +368,7 @@ def applications_delivered(request):
 
 
 def reports_year(request):
+    var = request.GET.get('param')
     ask = ''
     if request.method == 'POST':
         form = YearForm(request.POST)
@@ -386,8 +387,9 @@ def reports_year(request):
             ask = f'Отчет за {data} год'
             count = apps.count()
             net_profit = profit - fuel_price
+            print(var)
             return render(request, 'my_logistic/reports.html', {'ask': ask, 'count': count, 'amount_cargo': amount_cargo,
-            'profit': profit, 'fuel_price': fuel_price, 'net_profit': net_profit})
+            'profit': profit, 'fuel_price': fuel_price, 'net_profit': net_profit, 'var': var})
     else:
         ask = 'Введите год'
         form = YearForm()

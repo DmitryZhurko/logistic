@@ -23,7 +23,10 @@
       <th scope="col">Отчество</th>
       <th scope="col">Возраст</th>
       <th scope="col">Автомобиль</th>
+       {% if request.user.groups.first.name != 'level_1' %}
       <th scope="col">Подробнее</th>
+      {% else %}
+      {% endif %}
 
     </tr>
   </thead>
@@ -40,7 +43,7 @@
        {% if request.user.groups.first.name != 'level_1' %}
       <td><button class="btn btn-warning"> <a class="text-dark" href="{% url 'drivers_detail' drivers_pk=i.pk %}">Детали<a/> </button> </td>
         {% else %}
-      <td><button disabled class="btn btn-warning"> <a class="text-dark" href="{% url 'drivers_detail' drivers_pk=i.pk %}">Детали<a/> </button> </td>
+
       {% endif %}
     </tr>
   {% endfor %}
@@ -49,6 +52,6 @@
 {% if request.user.groups.first.name != 'level_1' %}
 <button type="button" class="btn btn-warning"><a class="text-dark" href="{% url 'add_drivers' %}?param=add">Добавить водителя</a></button>
 {% else %}
-<button disabled type="button" class="btn btn-warning"><a class="text-dark" href="{% url 'add_drivers' %}?param=add">Добавить водителя</a></button>
+
 {% endif %}
 {% endblock %}

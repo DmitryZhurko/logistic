@@ -14,7 +14,10 @@
   </style>
 <h2 class="p-3 mb-2 bg-warning text-dark">Заявки</h2>
 <br>
-
+ <button type="button" class="btn btn-secondary"><a class="text-white" href="{% url 'applications' %}">Заявки</a></button>
+<button type="button" class="btn btn-secondary"><a class="text-white" href="{% url 'queue_of_applications_free' %}">Заявки в очереди</a></button>
+<button type="button" class="btn btn-secondary"><a class="text-white" href="{% url 'queue_of_applications_busy' %}">Заявки на исполнении</a></button>
+<button type="button" class="btn btn-secondary"><a class="text-white" href="{% url 'applications_delivered' %}">Заявки исполненные</a></button>
 {% if var == 'add' or var == 'edit' %}
 <form method="POST">
   {% csrf_token %}

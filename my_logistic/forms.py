@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from django.forms import DateInput
+from django.forms import DateInput, TextInput, NumberInput
 
 from .models import Driver, Cars, Applications, Cargo
 
@@ -55,11 +55,12 @@ class CargoForm(forms.ModelForm):
 
 class FulfilledApplicationsForm(forms.Form):
     number = forms.IntegerField()
+    number.widget.attrs['placeholder'] = 'Введите номер заявки'
 
 
 class YearForm(forms.Form):
     data = forms.CharField()
-
+    data.widget.attrs['placeholder'] = 'Введите год'
 
 class MonthForm(forms.Form):
     choice_month = (

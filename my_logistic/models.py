@@ -31,7 +31,11 @@ class Cars(models.Model):
     fuel_type = models.CharField(max_length=50, choices=tupe_fuel, verbose_name='тип топлива')
 
     def __str__(self):
-        return f'{self.model}'
+        if self.free == True:
+            return f'{self.model} ({variant_for_status_car[1]})'
+        else:
+            return f'{self.model} ({variant_for_status_car[0]})'
+
 
     class Meta:
         verbose_name = 'Автомобиль'

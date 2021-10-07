@@ -14,6 +14,10 @@
   </style>
 <h2 class="p-3 mb-2 bg-warning text-dark">{{title}}</h2>
 <br>
+<button type="button" class="btn btn-secondary"><a class="text-white" href="{% url 'cars' %}">Автомобили</a></button>
+<button type="button" class="btn btn-secondary"><a class="text-white" href="{% url 'free_car_report' %}">Машины свободные</a></button>
+<button type="button" class="btn btn-secondary"><a class="text-white" href="{% url 'busy_cars' %}">Машины занятые</a></button>
+<br>
 
 {% if var == 'add' or var == 'edit' %}
 <form method="POST">

@@ -15,7 +15,7 @@
 <h2 class="p-3 mb-2 bg-warning text-dark">{{ask}}</h2>
 <br>
 
-
+{% if var == 'report' %}
 <table class="table table-dark">
   <thead>
     <tr>
@@ -38,6 +38,9 @@
 </table>
 <button type="button" class="btn btn-warning"><a class="text-dark" href="{% url 'report_for_all_months' %}">Отчет по всем месяцам года</a></button>
 <button type="button" class="btn btn-warning"><a class="text-dark" href="{% url 'reports_month' %}">Отчет по месяцу</a></button>
-
+{% elif var == 'chart' %}
+<button type="button" class="btn btn-warning"><a class="text-dark" href="{% url 'report_for_all_months' %}?param=2">График по прибыли за {{year}}</a></button>
+<button type="button" class="btn btn-warning"><a class="text-dark" href="{% url 'report_for_all_months' %}?param=4">График по чистой прибыли за {{year}}</a></button>
+{% endif %}
 
 {% endblock %}
