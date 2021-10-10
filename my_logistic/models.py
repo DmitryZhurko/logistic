@@ -82,7 +82,7 @@ class Applications(models.Model):
             result_weight += i.weight
         cost_distance = (self.cargos.first().distance / self.auto.fuel_consumption) * fuel
         cost_weight = result_weight * 0.04
-        return cost_distance + cost_weight
+        return round(cost_distance + cost_weight, 1)
 
     @property
     def fuel_cost(self):

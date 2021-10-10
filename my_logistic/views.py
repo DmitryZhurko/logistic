@@ -374,7 +374,8 @@ def reports_year(request):
         form = YearForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data['data']
-            request.session['year'] = data
+            year = request.session['year']
+            year = data
             apps = Applications.objects.filter(date_added__year=data, executed=True)
             amount_cargo = 0
             profit = 0
@@ -387,9 +388,8 @@ def reports_year(request):
             ask = f'Отчет за {data} год'
             count = apps.count()
             net_profit = profit - fuel_price
-            print(var)
             return render(request, 'my_logistic/reports.html', {'ask': ask, 'count': count, 'amount_cargo': amount_cargo,
-            'profit': profit, 'fuel_price': fuel_price, 'net_profit': net_profit, 'var': var})
+            'profit': profit, 'fuel_price': fuel_price, 'net_profit': net_profit, 'var': var, 'year': year})
     else:
         ask = 'Введите год'
         form = YearForm()
@@ -397,6 +397,9 @@ def reports_year(request):
 
 
 def reports_month(request):
+    var = request.GET.get('param')
+    print(var)
+    print('one month')
     if request.method == 'POST':
         form = MonthForm(request.POST)
         if form.is_valid():
@@ -411,12 +414,12 @@ def reports_month(request):
                 fuel_price += app.fuel_cost
                 for cargo in app.cargos.all():
                     amount_cargo += 1
-            ask = f'Отчет за {month} {year} года'
+            ask = f'Отчет за {month}.{year} года'
             count = apps.count()
             net_profit = profit - fuel_price
             return render(request, 'my_logistic/reports.html',
                           {'ask': ask, 'count': count, 'amount_cargo': amount_cargo,
-                           'profit': profit, 'fuel_price': fuel_price, 'net_profit': net_profit})
+                           'profit': profit, 'fuel_price': fuel_price, 'net_profit': net_profit, 'var': var})
     else:
         form = MonthForm()
     return render(request, 'my_logistic/reports_form.html', {'form': form})
@@ -424,6 +427,8 @@ def reports_month(request):
 
 def report_for_all_months(request):
     var = request.GET.get('param')
+    print(var)
+    print('all month')
     report = {}
     year = request.session['year']
     for i in range(1, 13):
